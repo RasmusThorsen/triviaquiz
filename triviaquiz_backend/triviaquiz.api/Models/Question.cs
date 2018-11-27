@@ -13,6 +13,7 @@ namespace triviaquiz.api.Models
         public QuestionDifficulty Difficulty { get; set; }
         public string Value { get; set; }
         public string CorrectAnswer { get; set; }
+        public Category Category { get; set; }
 
         private string _incorrectAnswers;
         private static readonly char delimiter = ';';
@@ -22,7 +23,6 @@ namespace triviaquiz.api.Models
             get { return _incorrectAnswers.Split(delimiter).ToList(); }
             set { _incorrectAnswers = string.Join($"{delimiter}", value); }
         }
-       
     }
 
     public enum QuestionType

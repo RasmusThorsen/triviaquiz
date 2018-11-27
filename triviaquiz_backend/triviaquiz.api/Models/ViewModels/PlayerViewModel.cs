@@ -9,6 +9,6 @@ namespace triviaquiz.api.Models.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string IsHost { get; set; }
+        public bool IsHost { get; set; }
     }
 }

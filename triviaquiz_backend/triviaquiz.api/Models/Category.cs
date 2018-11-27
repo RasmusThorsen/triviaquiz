@@ -10,5 +10,6 @@ namespace triviaquiz.api.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public List<Question> Questions { get; set; } = new List<Question>();
+        public Lobby Lobby { get; set; }
     }
 }
