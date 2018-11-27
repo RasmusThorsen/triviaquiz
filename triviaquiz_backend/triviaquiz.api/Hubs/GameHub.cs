@@ -55,7 +55,23 @@ namespace triviaquiz.api.Hubs
             return await _lobbyRepo.CreateLobby(lobby, host);
         }
 
+        public async Task<LobbyViewModel> Connect(ConnectInputViewModel model)
+        {
+            if (model == null) return null;
 
+            // check if any lobbies exists with the given gamecode
+            var lobbyId = await _lobbyRepo.ExistsWithCode(model.GameCode);
+            if (lobbyId == null) return null;
+
+            // add the player to the lobby
+            var player = new Player{IsHost = false, ConnectionId = Context.ConnectionId, Name = model.Username};
+            await _lobbyRepo.AddPlayer(lobbyId, player);
+
+            // return lobby
+            return await _lobbyRepo.GetLobby(lobbyId);
+        }
+
+        #region helper functions
         private async Task<string> GenerateGameCode()
         {
             var found = false;
@@ -66,7 +82,7 @@ namespace triviaquiz.api.Hubs
             while (!found)
             {
                 code = GenerateRandomString(pool, gamecodeLength);
-                if (!await _lobbyRepo.ExistsWithCode(code)) found = true;
+                if (!(await _lobbyRepo.ExistsWithCode(code) == null)) found = true;
             }
 
             return code;
@@ -83,10 +99,16 @@ namespace triviaquiz.api.Hubs
             }
             return builder.ToString();
         }
+
+
+        #endregion
+        
     }
 
     public interface IClientHub
     {
         Task<LobbyViewModel> Create(CreateLobbyViewModel model);
+
+        Task<LobbyViewModel> Connect(ConnectInputViewModel model);
     }
 }

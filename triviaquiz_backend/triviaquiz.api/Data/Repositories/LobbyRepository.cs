@@ -35,8 +35,21 @@ namespace triviaquiz.api.Data.Repositories
             await _context.Lobbies.AddAsync(lobby);
             await _context.SaveChangesAsync();
 
-            // success // TODO: Convert lobby to viewmodel
-            return null;
+            // success -- return the lobby
+            return new LobbyViewModel
+            {
+                Id = lobby.Id,
+                Categories = lobby.Categories,
+                GameCode = lobby.GameCode,
+                GameMode = lobby.GameMode,
+                Players = lobby.Players.Select(p => new PlayerViewModel
+                {
+                    Id = p.Id,
+                    IsHost = p.IsHost,
+                    Name = p.Name
+                }).ToList(),
+                State = lobby.State
+            };
         }
 
         public async Task DeleteLobby(string lobbyId)
@@ -49,9 +62,12 @@ namespace triviaquiz.api.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> ExistsWithCode(string gameCode)
+        public async Task<string> ExistsWithCode(string gameCode)
         {
-            return await _context.Lobbies.AnyAsync(l => l.GameCode == gameCode);
+            return await _context.Lobbies
+                .Where(l => l.GameCode == gameCode)
+                .Select(l => l.Id)
+                .SingleOrDefaultAsync();
         }
 
         public async Task<GameMode> GetGameMode(string gamemodeId)
@@ -65,6 +81,46 @@ namespace triviaquiz.api.Data.Repositories
             return await _context.GameModes
                 .Select(g => g)
                 .ToListAsync();
+        }
+
+        public async Task<LobbyViewModel> GetLobby(string lobbyId)
+        {
+            // get the lobby
+            var lobby = await _context.Lobbies
+                .Include(l => l.Players)
+                .Include(l => l.Categories)
+                    .ThenInclude(c => c.Questions)
+                .SingleOrDefaultAsync(l => l.Id == lobbyId);
+            if (lobby == null) return null;
+
+            return new LobbyViewModel
+            {
+                Id = lobby.Id,
+                Categories = lobby.Categories,
+                GameCode = lobby.GameCode,
+                GameMode = lobby.GameMode,
+                Players = lobby.Players.Select(p => new PlayerViewModel
+                {
+                    Id = p.Id,
+                    IsHost = p.IsHost,
+                    Name = p.Name
+                }).ToList(),
+                State = lobby.State
+            };
+        }
+
+        public async Task AddPlayer(string lobbyId, Player player)
+        {
+            // get the lobby
+            var lobby = await _context.Lobbies
+                .Include(l => l.Players)
+                .SingleOrDefaultAsync(l => l.Id == lobbyId);
+            if (lobby == null) return;
+
+            // add the player
+            lobby.Players.Add(player);
+
+            await _context.SaveChangesAsync();
         }
     }
 }
