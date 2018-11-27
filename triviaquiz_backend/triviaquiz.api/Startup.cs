@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using triviaquiz.api.Data;
+using triviaquiz.api.Hubs;
+using triviaquiz.api.Services;
 
 namespace triviaquiz.api
 {
@@ -46,6 +48,10 @@ namespace triviaquiz.api
                 });
             });
 
+            // injection
+            services.AddSingleton<IOpenTriviaDb, OpenTriviaDb>();
+
+            services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -63,6 +69,7 @@ namespace triviaquiz.api
 
             app.UseHttpsRedirection();
             app.UseCors("AllRequests");
+            app.UseSignalR(routes => { routes.MapHub<GameHub>("/game"); });
             app.UseMvc();
         }
     }

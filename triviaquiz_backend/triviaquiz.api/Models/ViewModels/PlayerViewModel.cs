@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace triviaquiz.api.Models
+namespace triviaquiz.api.Models.ViewModels
 {
-    public class Category
+    public class PlayerViewModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public List<Question> Questions { get; set; } = new List<Question>();
+        public string IsHost { get; set; }
     }
 }

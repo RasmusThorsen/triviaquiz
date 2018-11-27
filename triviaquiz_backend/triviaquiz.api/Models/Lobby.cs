@@ -9,9 +9,10 @@ namespace triviaquiz.api.Models
     {
         public string Id { get; set; }
         public string GameCode { get; set; }
-        public List<Player> Players { get; set; }
+        public List<Player> Players { get; set; } = new List<Player>();
         public LobbyState State { get; set; } = LobbyState.InLobby;
-        public List<Category> Categories { get; set; }
+        public List<Category> Categories { get; set; } = new List<Category>();
+        public GameMode GameMode { get; set; }
     }
 
     public enum LobbyState

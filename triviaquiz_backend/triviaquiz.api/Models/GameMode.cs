@@ -5,14 +5,9 @@ using System.Threading.Tasks;
 
 namespace triviaquiz.api.Models
 {
-    public class OtdbCategory
+    public class GameMode
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
-    }
-
-    public class OtdbCategoriesResponse
-    {
-        public List<OtdbCategory> trivia_categories { get; set; }
     }
 }

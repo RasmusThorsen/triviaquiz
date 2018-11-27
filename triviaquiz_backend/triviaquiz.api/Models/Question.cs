@@ -20,7 +20,7 @@ namespace triviaquiz.api.Models
         public List<string> IncorrectAnswers
         {
             get { return _incorrectAnswers.Split(delimiter).ToList(); }
-            set { string.Join($"{delimiter}", value).ToList(); }
+            set { _incorrectAnswers = string.Join($"{delimiter}", value); }
         }
        
     }
