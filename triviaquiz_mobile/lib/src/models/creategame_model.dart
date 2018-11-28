@@ -1,4 +1,6 @@
+import 'package:triviaquiz_mobile/src/models/category_model.dart';
+
 class CreateGameModel {
   String username;
-  List<String> categories = new List(5);
+  List<CategoryModel> categories = new List(5);
 }

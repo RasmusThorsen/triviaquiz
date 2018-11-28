@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:triviaquiz_mobile/src/bloc/categories_provider.dart';
 import 'package:triviaquiz_mobile/src/models/category_model.dart';
 import 'package:triviaquiz_mobile/src/models/creategame_model.dart';
+import 'package:signalr_client/signalr_client.dart';
+
+final serverUrl = "https://10.0.2.2:5001";
 
 class CreateForm extends StatefulWidget {
   @override
@@ -13,12 +16,27 @@ class CreateForm extends StatefulWidget {
 class CreateFormState extends State<CreateForm> {
   final _formKey = GlobalKey<FormState>();
   CreateGameModel model = new CreateGameModel();
-  // List<String> categories = <String>[];
+  var hubConnection;
+
+  CreateFormState() {
+    hubConnection = HubConnectionBuilder().withUrl(serverUrl).build();
+    
+    hubConnection.on('serverTest', serverResponse);
+
+    if(hubConnection.state != HubConnectionState.Connected) {
+      hubConnection.start();
+    }
+
+    hubConnection.invoke('clientTest');
+  }
+
+  serverResponse() {
+    print('Hej fra serverrespons');
+  }
 
   @override
   Widget build(BuildContext context) {
     final bloc = CategoryProvider.of(context);
-    bloc.fetchCategories();
 
     return SafeArea(
       top: false,
@@ -75,14 +93,18 @@ class CreateFormState extends State<CreateForm> {
             labelText: 'Category #$value',
           ),
           child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
+            child: DropdownButton<CategoryModel>(
               isDense: true,
+              isExpanded: true,
               value: model.categories[value - 1],
               hint: Text('Select category'),
-              items: categories.map((CategoryModel category) => category.name).map((String val) {
-                return DropdownMenuItem<String>(
-                  value: val,
-                  child: Text(val),
+              items: categories.map((CategoryModel category) {
+                return DropdownMenuItem<CategoryModel>(
+                  value: category,
+                  child: Text(
+                    category.name,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               }).toList(),
               onChanged: (newValue) {
@@ -112,7 +134,7 @@ class CreateFormState extends State<CreateForm> {
           // Invalid show snackbar or something
         } else {
           _formKey.currentState.save();
-          print(model.categories);
+          
         }
       },
     );
