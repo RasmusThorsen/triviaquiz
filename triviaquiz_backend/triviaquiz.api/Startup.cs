@@ -69,7 +69,7 @@ namespace triviaquiz.api
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseCors("AllRequests");
             app.UseSignalR(routes => { routes.MapHub<GameHub>("/game"); });
             app.UseMvc();

@@ -24,6 +24,9 @@ namespace triviaquiz.api.Hubs
 
         public async Task<LobbyViewModel> Create(CreateLobbyViewModel model)
         {
+            // TODO: Delete the following
+            model.GameModeId = "56f2133e-d59d-4871-832f-f4f86835d6df";
+
             // define host player
             var host = new Player
             {
@@ -33,7 +36,7 @@ namespace triviaquiz.api.Hubs
             };
 
             // define the lobby
-            var lobby = new LobbyViewModel
+            var lobby = new Lobby
             {
                 GameCode = await GenerateGameCode(),
                 GameMode = await _lobbyRepo.GetGameMode(model.GameModeId)
