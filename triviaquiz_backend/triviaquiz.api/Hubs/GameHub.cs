@@ -38,7 +38,8 @@ namespace triviaquiz.api.Hubs
             // define the lobby
             var lobby = new Lobby
             {
-                GameCode = await GenerateGameCode(),
+                // GameCode = await GenerateGameCode(),
+                GameCode = "HEJ1",
                 GameMode = await _lobbyRepo.GetGameMode(model.GameModeId)
             };
 

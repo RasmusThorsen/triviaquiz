@@ -1,11 +1,9 @@
+import 'package:triviaquiz_mobile/src/models/question_model.dart';
+
 class CategoryModel {
-  int id;
-  String name = '';
+  String id;
+  String name;
+  List<Question> questions = List();
 
-  CategoryModel.fromJson(Map<String, dynamic> parsedJson)
-    : id = parsedJson['id'],
-      name = parsedJson['name'] ?? '';
-
-  bool operator ==(o) => o is CategoryModel && o.name == name;
-  int get hashCode => name.hashCode;     
+  CategoryModel({this.id, this.name, this.questions});
 }

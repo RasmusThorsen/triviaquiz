@@ -1,4 +1,5 @@
 import 'package:signalr_client/signalr_client.dart';
+import 'package:triviaquiz_mobile/src/models/creategame_model.dart';
 
 final serverUrl = "http://10.0.2.2:5000";
 
@@ -24,7 +25,9 @@ class HubBloc {
     }
   }
 
-  startGame(List<Object> lobby) {
-    hubConnection.invoke('Create', args: lobby);
+  startGame(CreateGameModel lobby) async {
+    print(lobby.toJson());
+    var res = await hubConnection.invoke('Create', args: <Object>[lobby.toJson()]);
+      
   }
 }

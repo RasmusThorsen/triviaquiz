@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:triviaquiz_mobile/src/bloc/categories_provider.dart';
 import 'package:triviaquiz_mobile/src/bloc/hub_provider.dart';
+import 'package:triviaquiz_mobile/src/bloc/lobby_provider.dart';
 import 'package:triviaquiz_mobile/src/models/category_model.dart';
 import 'package:triviaquiz_mobile/src/models/creategame_model.dart';
+import 'package:triviaquiz_mobile/src/models/lobby_model.dart';
+import 'package:triviaquiz_mobile/src/models/otdb_category_model.dart';
+import 'package:triviaquiz_mobile/src/models/player_model.dart';
 
 class CreateForm extends StatefulWidget {
   @override
@@ -15,10 +19,10 @@ class CreateFormState extends State<CreateForm> {
   final _formKey = GlobalKey<FormState>();
   CreateGameModel model = new CreateGameModel();
   HubBloc hub;
-  
+
   @override
   Widget build(BuildContext context) {
-    final bloc = CategoryProvider.of(context);
+    final categoryBloc = CategoryProvider.of(context);
     hub = HubProvider.of(context);
 
     return SafeArea(
@@ -27,8 +31,8 @@ class CreateFormState extends State<CreateForm> {
       child: Form(
         key: _formKey,
         child: StreamBuilder(
-          stream: bloc.categories,
-          builder: (context, AsyncSnapshot<List<CategoryModel>> snapshot) {
+          stream: categoryBloc.categories,
+          builder: (context, AsyncSnapshot<List<OtdbCategoryModel>> snapshot) {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             }
@@ -43,7 +47,7 @@ class CreateFormState extends State<CreateForm> {
                 buildCategorySelector(4, snapshot.data),
                 buildCategorySelector(5, snapshot.data),
                 buildGameModeSelector(),
-                buildSubmit(),
+                buildSubmit(context),
               ],
             );
           },
@@ -54,7 +58,7 @@ class CreateFormState extends State<CreateForm> {
 
   Widget buildUsernameInput() {
     return TextFormField(
-      onSaved: (val) => model.username,
+      onSaved: (val) => model.username = val,
       decoration: InputDecoration(
         icon: Icon(Icons.face),
         labelText: 'Username',
@@ -67,7 +71,7 @@ class CreateFormState extends State<CreateForm> {
     );
   }
 
-  Widget buildCategorySelector(int value, List<CategoryModel> categories) {
+  Widget buildCategorySelector(int value, List<OtdbCategoryModel> categories) {
     return FormField(
       builder: (FormFieldState state) {
         return InputDecorator(
@@ -76,13 +80,13 @@ class CreateFormState extends State<CreateForm> {
             labelText: 'Category #$value',
           ),
           child: DropdownButtonHideUnderline(
-            child: DropdownButton<CategoryModel>(
+            child: DropdownButton<OtdbCategoryModel>(
               isDense: true,
               isExpanded: true,
               value: model.categories[value - 1],
               hint: Text('Select category'),
-              items: categories.map((CategoryModel category) {
-                return DropdownMenuItem<CategoryModel>(
+              items: categories.map((OtdbCategoryModel category) {
+                return DropdownMenuItem<OtdbCategoryModel>(
                   value: category,
                   child: Text(
                     category.name,
@@ -109,7 +113,27 @@ class CreateFormState extends State<CreateForm> {
     return Container();
   }
 
-  Widget buildSubmit() {
+  Widget buildSubmit(BuildContext context) {
+    final lobbyBloc = LobbyProvider.of(context);
+    var lobbyModel = LobbyModel();
+    lobbyModel.gameCode = "test";
+    lobbyModel.categories = [ 
+      CategoryModel(id: 'test', name: 'Test 1'),
+      CategoryModel(id: 'test', name: 'Test 2'),
+      CategoryModel(id: 'test', name: 'Test 3'),
+      CategoryModel(id: 'test', name: 'Test 4'),
+      CategoryModel(id: 'test', name: 'Test 5'),
+    ];
+    lobbyModel.players = [
+      PlayerModel(id: 'test', name: 'Test 1'),
+      PlayerModel(id: 'test', name: 'Rest 2'),
+      PlayerModel(id: 'test', name: 'Jest 3'),
+      PlayerModel(id: 'test', name: 'Aest 4'),
+      PlayerModel(id: 'test', name: 'Aest 4'),
+      PlayerModel(id: 'test', name: 'Aest 4'),
+      PlayerModel(id: 'test', name: 'Aest 4'),
+    ];
+
     return RaisedButton(
       child: Text('Submit'),
       onPressed: () {
@@ -117,8 +141,11 @@ class CreateFormState extends State<CreateForm> {
           // Invalid show snackbar or something
         } else {
           _formKey.currentState.save();
+
           model.gameModeId = "gamemode";
-          hub.startGame(model as List);
+          // hub.startGame(model);
+          lobbyBloc.addLobby(lobbyModel);
+          Navigator.pushNamed(context, '/lobby');
         }
       },
     );
