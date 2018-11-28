@@ -1,31 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import 'package:triviaquiz_mobile/src/models/category_model.dart';
 
 class CategoryApiProvider {
-  final String apiEndPoint = 'https://10.0.2.2:5001/api';
-
-  HttpClient httpClient = new HttpClient()
-    ..badCertificateCallback = ((cert, String host, int port) {
-      return true;
-    });
+  final String apiEndPoint = 'http://10.0.2.2:5000/api';
 
   Future<List<CategoryModel>> fetchCategories() async {
-    var categoryList;
+    final response = await http.get("$apiEndPoint/lobby/categories");
+    final categories = json.decode(response.body);
 
-    var request =
-        await httpClient.getUrl(Uri.parse("$apiEndPoint/lobby/categories"));
-    var response = await request.close();
+    var categoryModels = (categories as List).map((categoryModel) {
+      return CategoryModel.fromJson(categoryModel);
+    }).toList();
 
-    await for (var contents in response.transform(Utf8Decoder())) {
-      Iterable categoriesJson = json.decode(contents);
-      categoryList = categoriesJson
-          .map((model) => CategoryModel.fromJson(model))
-          .toList();
-    }
-
-    return categoryList;
+    return categoryModels;
   }
 }

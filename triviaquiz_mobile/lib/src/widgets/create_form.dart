@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:triviaquiz_mobile/src/bloc/categories_provider.dart';
+import 'package:triviaquiz_mobile/src/bloc/hub_provider.dart';
 import 'package:triviaquiz_mobile/src/models/category_model.dart';
 import 'package:triviaquiz_mobile/src/models/creategame_model.dart';
-import 'package:signalr_client/signalr_client.dart';
-
-final serverUrl = "https://10.0.2.2:5001";
 
 class CreateForm extends StatefulWidget {
   @override
@@ -16,27 +14,12 @@ class CreateForm extends StatefulWidget {
 class CreateFormState extends State<CreateForm> {
   final _formKey = GlobalKey<FormState>();
   CreateGameModel model = new CreateGameModel();
-  var hubConnection;
-
-  CreateFormState() {
-    hubConnection = HubConnectionBuilder().withUrl('$serverUrl/game').build();
-    
-    hubConnection.on('serverTest', serverResponse);
-
-    if(hubConnection.state != HubConnectionState.Connected) {
-      hubConnection.start();
-    }
-
-    hubConnection.invoke('clientTest');
-  }
-
-  serverResponse(List<Object> args) {
-    print('Hej fra serverrespons');
-  }
-
+  HubBloc hub;
+  
   @override
   Widget build(BuildContext context) {
     final bloc = CategoryProvider.of(context);
+    hub = HubProvider.of(context);
 
     return SafeArea(
       top: false,
@@ -134,7 +117,8 @@ class CreateFormState extends State<CreateForm> {
           // Invalid show snackbar or something
         } else {
           _formKey.currentState.save();
-          
+          model.gameModeId = "gamemode";
+          hub.startGame(model as List);
         }
       },
     );
