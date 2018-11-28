@@ -71,6 +71,13 @@ namespace triviaquiz.api.Hubs
             return await _lobbyRepo.GetLobby(lobbyId);
         }
 
+        public async Task ClientTest()
+        {
+            await Clients.Caller.ServerTest();
+        }
+
+
+
         #region helper functions
         private async Task<string> GenerateGameCode()
         {
@@ -107,8 +114,11 @@ namespace triviaquiz.api.Hubs
 
     public interface IClientHub
     {
-        Task<LobbyViewModel> Create(CreateLobbyViewModel model);
+        //Task<LobbyViewModel> Create(CreateLobbyViewModel model);
 
-        Task<LobbyViewModel> Connect(ConnectInputViewModel model);
+        //Task<LobbyViewModel> Connect(ConnectInputViewModel model);
+
+
+        Task ServerTest();
     }
 }
