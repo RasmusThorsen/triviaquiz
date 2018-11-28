@@ -9,7 +9,7 @@ namespace triviaquiz.api.Data.Repositories
 {
     public interface ILobbyRepository
     {
-        Task<LobbyViewModel> CreateLobby(LobbyViewModel model, Player host);
+        Task<LobbyViewModel> CreateLobby(Lobby model, Player host);
         Task<string> ExistsWithCode(string gameCode);
         Task<GameMode> GetGameMode(string gamemodeId);
         Task DeleteLobby(string lobbyId);
