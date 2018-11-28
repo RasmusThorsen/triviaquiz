@@ -29,6 +29,21 @@ namespace triviaquiz.api.Data
                 new GameMode { Id = "56f2133e-d59d-4871-832f-f4f86835d6df", Name = "Drinking Game"},
                 new GameMode { Id = "ae3476ce-d55f-42e9-bdbf-564ab27e0338", Name = "Classic"}
             );
+
+            modelBuilder.Entity<Category>()
+                .HasOne(c => c.Lobby)
+                .WithMany(l => l.Categories)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Question>()
+                .HasOne(q => q.Category)
+                .WithMany(c => c.Questions)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Player>()
+                .HasOne(p => p.Lobby)
+                .WithMany(l => l.Players)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

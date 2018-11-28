@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public string ConnectionId { get; set; }
         public bool IsHost { get; set; } = false;
+        public Lobby Lobby { get; set; }
     }
 }

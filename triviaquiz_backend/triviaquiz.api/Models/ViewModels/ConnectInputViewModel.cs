@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace triviaquiz.api.Models.ViewModels
 {
-    public class PlayerViewModel
+    public class ConnectInputViewModel
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public bool IsHost { get; set; }
+        public string Username { get; set; }
+        public string GameCode { get; set; }
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using triviaquiz.api.Data;
+using triviaquiz.api.Data.Repositories;
 using triviaquiz.api.Hubs;
 using triviaquiz.api.Services;
 
@@ -50,6 +51,7 @@ namespace triviaquiz.api
 
             // injection
             services.AddSingleton<IOpenTriviaDb, OpenTriviaDb>();
+            services.AddScoped<ILobbyRepository, LobbyRepository>();
 
             services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
