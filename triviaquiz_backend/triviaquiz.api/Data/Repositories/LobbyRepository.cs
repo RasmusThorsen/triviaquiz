@@ -97,14 +97,13 @@ namespace triviaquiz.api.Data.Repositories
                 Id = lobby.Id,
                 Categories = lobby.Categories,
                 GameCode = lobby.GameCode,
-                GameMode = lobby.GameMode,
+                GameMode = lobby.GameMode.Name,
                 Players = lobby.Players.Select(p => new PlayerViewModel
                 {
                     Id = p.Id,
                     IsHost = p.IsHost,
                     Name = p.Name
                 }).ToList(),
-                State = lobby.State
             };
         }
 
