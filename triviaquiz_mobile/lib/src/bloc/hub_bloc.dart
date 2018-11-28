@@ -16,7 +16,7 @@ class HubBloc {
       hubConnection.onclose((error) => print(error));
 
       // Setup event handlers
-      hubConnection.on('', null);
+      // hubConnection.on('', null);
     }
 
     if (hubConnection.state != HubConnectionState.Connected) {
