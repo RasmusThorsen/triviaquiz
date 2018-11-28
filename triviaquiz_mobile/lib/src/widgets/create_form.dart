@@ -19,7 +19,7 @@ class CreateFormState extends State<CreateForm> {
   var hubConnection;
 
   CreateFormState() {
-    hubConnection = HubConnectionBuilder().withUrl(serverUrl).build();
+    hubConnection = HubConnectionBuilder().withUrl('$serverUrl/game').build();
     
     hubConnection.on('serverTest', serverResponse);
 
@@ -30,7 +30,7 @@ class CreateFormState extends State<CreateForm> {
     hubConnection.invoke('clientTest');
   }
 
-  serverResponse() {
+  serverResponse(List<Object> args) {
     print('Hej fra serverrespons');
   }
 
