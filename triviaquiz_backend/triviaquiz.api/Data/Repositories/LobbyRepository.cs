@@ -36,19 +36,8 @@ namespace triviaquiz.api.Data.Repositories
             await _context.SaveChangesAsync();
 
             // success -- return the lobby
-            return new LobbyViewModel
-            {
-                Id = lobby.Id,
-                Categories = lobby.Categories,
-                GameCode = lobby.GameCode,
-                GameMode = lobby.GameMode.Name,
-                Players = lobby.Players.Select(p => new PlayerViewModel
-                {
-                    Id = p.Id,
-                    IsHost = p.IsHost,
-                    Name = p.Name
-                }).ToList(),
-            };
+            var vm = BuildViewModel(lobby);
+            return vm;
         }
 
         public async Task DeleteLobby(string lobbyId)
@@ -92,19 +81,7 @@ namespace triviaquiz.api.Data.Repositories
                 .SingleOrDefaultAsync(l => l.Id == lobbyId);
             if (lobby == null) return null;
 
-            return new LobbyViewModel
-            {
-                Id = lobby.Id,
-                Categories = lobby.Categories,
-                GameCode = lobby.GameCode,
-                GameMode = lobby.GameMode.Name,
-                Players = lobby.Players.Select(p => new PlayerViewModel
-                {
-                    Id = p.Id,
-                    IsHost = p.IsHost,
-                    Name = p.Name
-                }).ToList(),
-            };
+            return BuildViewModel(lobby);
         }
 
         public async Task AddPlayer(string lobbyId, Player player)
@@ -119,6 +96,36 @@ namespace triviaquiz.api.Data.Repositories
             lobby.Players.Add(player);
 
             await _context.SaveChangesAsync();
+        }
+
+        private LobbyViewModel BuildViewModel(Lobby lobby)
+        {
+            return new LobbyViewModel
+            {
+                Id = lobby.Id,
+                Categories = lobby.Categories.Select(c => new CategoryViewModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Questions = c.Questions.Select(q => new QuestionViewModel
+                    {
+                        Id = q.Id,
+                        Value = q.Value,
+                        CorrectAnswer = q.CorrectAnswer,
+                        Difficulty = q.Difficulty,
+                        Type = q.Type,
+                        IncorrectAnswers = q.IncorrectAnswers
+                    }).ToList()
+                }).ToList(),
+                GameCode = lobby.GameCode,
+                GameMode = lobby.GameMode.Name,
+                Players = lobby.Players.Select(p => new PlayerViewModel
+                {
+                    Id = p.Id,
+                    IsHost = p.IsHost,
+                    Name = p.Name
+                }).ToList(),
+            };
         }
     }
 }
