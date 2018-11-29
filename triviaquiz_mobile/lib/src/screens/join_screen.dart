@@ -3,7 +3,6 @@ import 'package:triviaquiz_mobile/src/bloc/hub_provider.dart';
 import 'package:triviaquiz_mobile/src/bloc/lobby_provider.dart';
 import 'package:triviaquiz_mobile/src/models/joinplayer_model.dart';
 import 'package:triviaquiz_mobile/src/models/player_model.dart';
-import 'package:triviaquiz_mobile/src/models/user_connected_model.dart';
 
 class JoinScreen extends StatelessWidget {
   @override
@@ -78,10 +77,6 @@ class _JoinScreenFormState extends State<JoinScreenForm> {
             hub.joinGame(player).then((lobby) {
               lobbyBloc.addLobby(lobby);
               lobbyBloc.addPlayers(lobby.players);
-            });
-
-            hub.onEvent('UserConnected', (List<PlayerModel> users) {
-              lobbyBloc.addPlayers(users);
             });
 
             Navigator.pushNamed(context, '/lobby');

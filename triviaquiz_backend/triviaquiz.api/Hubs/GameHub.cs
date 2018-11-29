@@ -38,8 +38,7 @@ namespace triviaquiz.api.Hubs
             // define the lobby
             var lobby = new Lobby
             {
-                // GameCode = await GenerateGameCode(),
-                GameCode = "HEJ1",
+                GameCode = await GenerateGameCode(),
                 GameMode = await _lobbyRepo.GetGameMode(model.GameModeId)
             };
 
@@ -78,7 +77,7 @@ namespace triviaquiz.api.Hubs
             var connections = await _lobbyRepo.GetPlayerConnectionIds(lobbyId);
             var players = lobby.Players;
             await Clients.Clients(connections.Where(c => c != Context.ConnectionId).ToList())
-                .UserConnected(players);
+                .UserConnected(players); 
 
             // return lobby
             return lobby;

@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:triviaquiz_mobile/src/bloc/hub_provider.dart';
 import 'package:triviaquiz_mobile/src/bloc/lobby_provider.dart';
 import 'package:triviaquiz_mobile/src/models/category_model.dart';
 import 'package:triviaquiz_mobile/src/models/lobby_model.dart';
 import 'package:triviaquiz_mobile/src/models/player_model.dart';
 
 class LobbyScreen extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     final lobby = LobbyProvider.of(context);
+    final hub = HubProvider.of(context);
+
+    hub.onEvent('UserConnected', (List<Object> users) {
+      users.forEach((f) => print(f));
+      lobby.addPlayers(users);
+    });
 
     return Scaffold(
       appBar: AppBar(
