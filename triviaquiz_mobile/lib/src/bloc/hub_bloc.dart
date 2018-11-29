@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:signalr_client/signalr_client.dart';
 import 'package:triviaquiz_mobile/src/models/creategame_model.dart';
+import 'package:triviaquiz_mobile/src/models/joinplayer_model.dart';
 import 'package:triviaquiz_mobile/src/models/lobby_model.dart';
+import 'package:triviaquiz_mobile/src/models/player_model.dart';
 
 final serverUrl = "http://10.0.2.2:5000";
 
@@ -26,8 +30,13 @@ class HubBloc {
     }
   }
 
-  startGame(CreateGameModel lobby) async {
-    print(lobby.toJson());
-    hubConnection.invoke('Create', args: <Object>[lobby.toJson()]).then((res) => print(res)).catchError((err) => print(err));
+  Future<LobbyModel> startGame(CreateGameModel lobby) async {
+    var createdLobby = await hubConnection.invoke('Create', args: <Object>[lobby.toJson()]);
+    return LobbyModel.fromJson(createdLobby);
+  }
+
+  Future<LobbyModel> joinGame(JoinPlayerModel player) async {
+    var joinedLobby = await hubConnection.invoke('Connect', args: <Object>[player.toJson()]);
+    return LobbyModel.fromJson(joinedLobby);
   }
 }

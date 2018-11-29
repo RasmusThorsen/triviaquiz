@@ -4,7 +4,7 @@ import 'package:triviaquiz_mobile/src/models/player_model.dart';
 
 class LobbyBloc {
   final _lobbySubject = BehaviorSubject<LobbyModel>();
-  final _playersSubject = PublishSubject<List<PlayerModel>>();
+  final _playersSubject = BehaviorSubject<List<PlayerModel>>();
 
   // Getters for streams
   Observable<LobbyModel> get lobbies => _lobbySubject.stream;

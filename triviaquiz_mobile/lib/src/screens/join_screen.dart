@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:triviaquiz_mobile/src/models/player_model.dart';
+import 'package:triviaquiz_mobile/src/bloc/hub_provider.dart';
+import 'package:triviaquiz_mobile/src/bloc/lobby_provider.dart';
+import 'package:triviaquiz_mobile/src/models/joinplayer_model.dart';
 
 class JoinScreen extends StatelessWidget {
   @override
@@ -15,8 +17,8 @@ class JoinScreenForm extends StatefulWidget {
 }
 
 class _JoinScreenFormState extends State<JoinScreenForm> {
-  final PlayerModel player = new PlayerModel();
-  String gamecode;
+  final _formKey = GlobalKey<FormState>();
+  final JoinPlayerModel player = new JoinPlayerModel();
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +28,12 @@ class _JoinScreenFormState extends State<JoinScreenForm> {
       ),
       body: Container(
         child: Form(
+          key: _formKey,
           child: Column(
             children: <Widget>[
               buildTextInput("GameCode"),
               buildTextInput("Username"),
-              buildSubmit(),
+              buildSubmit(context),
             ],
           ),
         ),
@@ -43,7 +46,7 @@ class _JoinScreenFormState extends State<JoinScreenForm> {
       margin: EdgeInsets.all(16.0),
       child: TextFormField(
         onSaved: (val) {
-          type == "GameCode" ? gamecode = val : player.name = val;
+          type == "GameCode" ? player.gameCode = val : player.userName = val;
         },
         decoration: InputDecoration(
           labelText: '$type',
@@ -58,11 +61,26 @@ class _JoinScreenFormState extends State<JoinScreenForm> {
     );
   }
 
-  buildSubmit() {
+  buildSubmit(BuildContext context) {
+    final hub = HubProvider.of(context);
+    final lobbyBloc = LobbyProvider.of(context);
+
     return Container(
       child: RaisedButton(
         child: Text('Submit'),
-        onPressed: (){},
+        onPressed: () {
+          if (!_formKey.currentState.validate()) {
+            // Invalid show snackbar or something
+          } else {
+            _formKey.currentState.save();
+            hub.joinGame(player).then((lobby) {
+              lobbyBloc.addLobby(lobby);
+              lobbyBloc.addPlayers(lobby.players);
+            });
+
+            Navigator.pushNamed(context, '/lobby');
+          }
+        },
       ),
     );
   }

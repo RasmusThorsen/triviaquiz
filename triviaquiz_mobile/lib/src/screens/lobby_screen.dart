@@ -57,7 +57,7 @@ class LobbyScreen extends StatelessWidget {
       stream: lobby.lobbies,
       builder: (context, AsyncSnapshot<LobbyModel> snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
         return Column(
           children: <Widget>[
@@ -92,16 +92,14 @@ class LobbyScreen extends StatelessWidget {
     );
   }
 
-  buildPlayers(BuildContext context) {
+  Widget buildPlayers(BuildContext context) {
     final lobby = LobbyProvider.of(context);
 
     return StreamBuilder(
       stream: lobby.players,
       builder: (context, AsyncSnapshot<List<PlayerModel>> snapshot) {
         if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return Container();
         }
         return Container(
           height: 100.0,
