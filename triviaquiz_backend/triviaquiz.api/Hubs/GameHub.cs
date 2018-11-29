@@ -92,7 +92,7 @@ namespace triviaquiz.api.Hubs
             while (!found)
             {
                 code = GenerateRandomString(pool, gamecodeLength);
-                if (!(await _lobbyRepo.ExistsWithCode(code) == null)) found = true;
+                if (await _lobbyRepo.ExistsWithCode(code) == null) found = true;
             }
 
             return code;
