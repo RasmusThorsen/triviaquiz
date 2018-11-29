@@ -67,19 +67,21 @@ namespace triviaquiz.api.Hubs
             if (lobbyId == null) return null;
 
             // add the player to the lobby
-            var player = new Player{IsHost = false, ConnectionId = Context.ConnectionId, Name = model.Username};
+            var player = new Player { IsHost = false, ConnectionId = Context.ConnectionId, Name = model.Username };
             await _lobbyRepo.AddPlayer(lobbyId, player);
 
+            // get the lobby
+            var lobby = await _lobbyRepo.GetLobby(lobbyId);
+
+            // notify the players inside the lobby about the newly connected user
+            var connections = await _lobbyRepo.GetPlayerConnectionIds(lobbyId);
+            var playerNames = lobby.Players.Select(p => p.Name).ToList();
+            await Clients.Clients(connections.Where(c => c != Context.ConnectionId).ToList())
+                .UserConnected(new UserConnectedViewModel { ConnectedUsers = playerNames, LobbyId = lobby.Id });
+
             // return lobby
-            return await _lobbyRepo.GetLobby(lobbyId);
+            return lobby;
         }
-
-        public async Task ClientTest()
-        {
-            await Clients.Caller.ServerTest();
-        }
-
-
 
         #region helper functions
         private async Task<string> GenerateGameCode()
@@ -117,11 +119,6 @@ namespace triviaquiz.api.Hubs
 
     public interface IClientHub
     {
-        //Task<LobbyViewModel> Create(CreateLobbyViewModel model);
-
-        //Task<LobbyViewModel> Connect(ConnectInputViewModel model);
-
-
-        Task ServerTest();
+        Task UserConnected(UserConnectedViewModel model);
     }
 }
