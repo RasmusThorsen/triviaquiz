@@ -134,6 +134,8 @@ class CreateFormState extends State<CreateForm> {
       PlayerModel(id: 'test', name: 'Aest 4'),
     ];
 
+    lobbyBloc.addPlayers(lobbyModel.players);
+
     return RaisedButton(
       child: Text('Submit'),
       onPressed: () {
@@ -143,7 +145,7 @@ class CreateFormState extends State<CreateForm> {
           _formKey.currentState.save();
 
           model.gameModeId = "gamemode";
-          // hub.startGame(model);
+          hub.startGame(model);
           lobbyBloc.addLobby(lobbyModel);
           Navigator.pushNamed(context, '/lobby');
         }

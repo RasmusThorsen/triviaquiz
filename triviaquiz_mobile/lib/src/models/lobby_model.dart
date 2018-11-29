@@ -6,4 +6,5 @@ class LobbyModel {
   String gameCode;
   List<PlayerModel> players;
   List<CategoryModel> categories;
+  String gameMode;
 }

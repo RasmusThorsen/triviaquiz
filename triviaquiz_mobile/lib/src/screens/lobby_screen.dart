@@ -7,6 +7,8 @@ import 'package:triviaquiz_mobile/src/models/player_model.dart';
 class LobbyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final lobby = LobbyProvider.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Lobby'),
@@ -15,7 +17,26 @@ class LobbyScreen extends StatelessWidget {
             color: Colors.white,
             icon: Icon(Icons.people),
             onPressed: () {
-              // show "bottomsheet" with people names
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return StreamBuilder(
+                    stream: lobby.lobbies,
+                    builder: (context, AsyncSnapshot<LobbyModel> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return ListView(
+                        children: snapshot.data.players.map((player) {
+                          return ListTile(
+                            title: Text(player.name),
+                          );
+                        }).toList(),
+                      );
+                    },
+                  );
+                },
+              );
             },
           ),
           IconButton(
@@ -42,7 +63,7 @@ class LobbyScreen extends StatelessWidget {
           children: <Widget>[
             buildGameCode(snapshot.data.gameCode),
             buildChosenCategories(snapshot.data.categories),
-            buildPlayers(snapshot.data.players),
+            buildPlayers(context),
           ],
         );
       },
@@ -71,28 +92,40 @@ class LobbyScreen extends StatelessWidget {
     );
   }
 
-  Widget buildPlayers(List<PlayerModel> players) {
-    return Container(
-      height: 100.0,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: players.map((player) {
-          return Container(
-            width: 60.0,
-            margin: EdgeInsets.symmetric(horizontal: 8.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blueGrey,
-            ),
-            child: Center(
-              child: Text(
-                player.name[0],
-                style: TextStyle(fontSize: 28.0, color: Colors.white),
-              ),
-            ),
+  buildPlayers(BuildContext context) {
+    final lobby = LobbyProvider.of(context);
+
+    return StreamBuilder(
+      stream: lobby.players,
+      builder: (context, AsyncSnapshot<List<PlayerModel>> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
           );
-        }).toList(),
-      ),
+        }
+        return Container(
+          height: 100.0,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: snapshot.data.map((player) {
+              return Container(
+                width: 60.0,
+                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blueGrey,
+                ),
+                child: Center(
+                  child: Text(
+                    player.name[0],
+                    style: TextStyle(fontSize: 28.0, color: Colors.white),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        );
+      },
     );
   }
 }
