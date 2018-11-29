@@ -16,6 +16,6 @@ namespace triviaquiz.api.Data.Repositories
         Task<List<GameMode>> GetGameModes();
         Task<LobbyViewModel> GetLobby(string lobbyId);
         Task AddPlayer(string lobbyId, Player player);
-
+        Task<List<string>> GetPlayerConnectionIds(string lobbyId);
     }
 }

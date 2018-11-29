@@ -76,6 +76,7 @@ namespace triviaquiz.api.Data.Repositories
             // get the lobby
             var lobby = await _context.Lobbies
                 .Include(l => l.Players)
+                .Include(l => l.GameMode)
                 .Include(l => l.Categories)
                     .ThenInclude(c => c.Questions)
                 .SingleOrDefaultAsync(l => l.Id == lobbyId);
@@ -96,6 +97,18 @@ namespace triviaquiz.api.Data.Repositories
             lobby.Players.Add(player);
 
             await _context.SaveChangesAsync();
+        }
+        public async Task<List<string>> GetPlayerConnectionIds(string lobbyId)
+        {
+            // get lobby
+            var lobby = await _context.Lobbies
+                .Include(l => l.Players)
+                .SingleOrDefaultAsync(l => l.Id == lobbyId);
+
+            if (lobby == null) return null;
+
+            // return connection ids
+            return lobby.Players.Select(p => p.ConnectionId).ToList();
         }
 
         private LobbyViewModel BuildViewModel(Lobby lobby)
@@ -127,5 +140,7 @@ namespace triviaquiz.api.Data.Repositories
                 }).ToList(),
             };
         }
+
+        
     }
 }
