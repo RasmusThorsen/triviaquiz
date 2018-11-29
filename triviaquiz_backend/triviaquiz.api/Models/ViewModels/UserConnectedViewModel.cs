@@ -8,6 +8,6 @@ namespace triviaquiz.api.Models.ViewModels
     public class UserConnectedViewModel
     {
         public string LobbyId { get; set; }
-        public List<string> ConnectedUsers { get; set; }
+        public List<PlayerViewModel> ConnectedUsers { get; set; }
     }
 }

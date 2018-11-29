@@ -75,9 +75,9 @@ namespace triviaquiz.api.Hubs
 
             // notify the players inside the lobby about the newly connected user
             var connections = await _lobbyRepo.GetPlayerConnectionIds(lobbyId);
-            var playerNames = lobby.Players.Select(p => p.Name).ToList();
+            var players = lobby.Players;
             await Clients.Clients(connections.Where(c => c != Context.ConnectionId).ToList())
-                .UserConnected(new UserConnectedViewModel { ConnectedUsers = playerNames, LobbyId = lobby.Id });
+                .UserConnected(new UserConnectedViewModel { ConnectedUsers = players, LobbyId = lobby.Id });
 
             // return lobby
             return lobby;
