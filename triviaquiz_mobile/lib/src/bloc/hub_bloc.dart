@@ -20,9 +20,6 @@ class HubBloc {
     if (hubConnection == null) {
       hubConnection = HubConnectionBuilder().withUrl('$serverUrl/game').build();
       hubConnection.onclose((error) => print(error));
-
-      // Setup event handlers
-      // hubConnection.on('', null);
     }
 
     if (hubConnection.state != HubConnectionState.Connected) {
@@ -38,5 +35,9 @@ class HubBloc {
   Future<LobbyModel> joinGame(JoinPlayerModel player) async {
     var joinedLobby = await hubConnection.invoke('Connect', args: <Object>[player.toJson()]);
     return LobbyModel.fromJson(joinedLobby);
+  }
+
+  onEvent(String event, Function handler) {
+    hubConnection.on(event, handler);
   }
 }

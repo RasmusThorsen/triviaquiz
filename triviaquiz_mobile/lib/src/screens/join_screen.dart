@@ -78,6 +78,10 @@ class _JoinScreenFormState extends State<JoinScreenForm> {
               lobbyBloc.addPlayers(lobby.players);
             });
 
+            hub.onEvent('UserConnected', () {
+              
+            });
+
             Navigator.pushNamed(context, '/lobby');
           }
         },
