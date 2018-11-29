@@ -77,7 +77,7 @@ namespace triviaquiz.api.Hubs
             var connections = await _lobbyRepo.GetPlayerConnectionIds(lobbyId);
             var players = lobby.Players;
             await Clients.Clients(connections.Where(c => c != Context.ConnectionId).ToList())
-                .UserConnected(new UserConnectedViewModel { ConnectedUsers = players, LobbyId = lobby.Id });
+                .UserConnected(players);
 
             // return lobby
             return lobby;
@@ -119,6 +119,6 @@ namespace triviaquiz.api.Hubs
 
     public interface IClientHub
     {
-        Task UserConnected(UserConnectedViewModel model);
+        Task UserConnected(List<PlayerViewModel> connectedPlayers);
     }
 }
