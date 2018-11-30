@@ -23,8 +23,6 @@ class CreateFormState extends State<CreateForm> {
     hub = HubProvider.of(context);
 
     return SafeArea(
-      top: false,
-      bottom: false,
       child: Form(
         key: _formKey,
         child: StreamBuilder(
@@ -73,7 +71,7 @@ class CreateFormState extends State<CreateForm> {
       builder: (FormFieldState state) {
         return InputDecorator(
           decoration: InputDecoration(
-            icon: getIcon(value),
+            icon: _getIcon(value),
             labelText: 'Category #$value',
           ),
           child: DropdownButtonHideUnderline(
@@ -133,7 +131,7 @@ class CreateFormState extends State<CreateForm> {
     );
   }
 
-  Icon getIcon(int value) {
+  Icon _getIcon(int value) {
     switch (value) {
       case 1:
         return Icon(Icons.filter_1);

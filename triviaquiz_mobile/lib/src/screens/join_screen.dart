@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:triviaquiz_mobile/src/bloc/hub_provider.dart';
 import 'package:triviaquiz_mobile/src/bloc/lobby_provider.dart';
 import 'package:triviaquiz_mobile/src/models/joinplayer_model.dart';
-import 'package:triviaquiz_mobile/src/models/player_model.dart';
 
 class JoinScreen extends StatelessWidget {
   @override

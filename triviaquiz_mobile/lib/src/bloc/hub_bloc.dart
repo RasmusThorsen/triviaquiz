@@ -28,12 +28,14 @@ class HubBloc {
   }
 
   Future<LobbyModel> startGame(CreateGameModel lobby) async {
-    var createdLobby = await hubConnection.invoke('Create', args: <Object>[lobby.toJson()]);
+    var createdLobby =
+        await hubConnection.invoke('Create', args: <Object>[lobby.toJson()]);
     return LobbyModel.fromJson(createdLobby);
   }
 
   Future<LobbyModel> joinGame(JoinPlayerModel player) async {
-    var joinedLobby = await hubConnection.invoke('Connect', args: <Object>[player.toJson()]);
+    var joinedLobby =
+        await hubConnection.invoke('Connect', args: <Object>[player.toJson()]);
     return LobbyModel.fromJson(joinedLobby);
   }
 

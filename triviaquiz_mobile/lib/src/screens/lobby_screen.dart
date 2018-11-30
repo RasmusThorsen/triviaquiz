@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:triviaquiz_mobile/src/bloc/hub_provider.dart';
 import 'package:triviaquiz_mobile/src/bloc/lobby_provider.dart';
@@ -12,9 +14,10 @@ class LobbyScreen extends StatelessWidget {
     final lobby = LobbyProvider.of(context);
     final hub = HubProvider.of(context);
 
-    hub.onEvent('UserConnected', (List<Object> users) {
-      users.forEach((f) => print(f));
-      lobby.addPlayers(users);
+    hub.onEvent('UserConnected', (List<Object> args) {
+      List<PlayerModel> players = (json.decode(jsonEncode(args[0])) as List).map((e) => PlayerModel.fromJson(e)).toList();      
+      
+      lobby.addPlayers(players);
     });
 
     return Scaffold(
@@ -29,13 +32,13 @@ class LobbyScreen extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return StreamBuilder(
-                    stream: lobby.lobbies,
-                    builder: (context, AsyncSnapshot<LobbyModel> snapshot) {
+                    stream: lobby.players,
+                    builder: (context, AsyncSnapshot<List<PlayerModel>> snapshot) {
                       if (!snapshot.hasData) {
                         return Center(child: CircularProgressIndicator());
                       }
                       return ListView(
-                        children: snapshot.data.players.map((player) {
+                        children: snapshot.data.map((player) {
                           return ListTile(
                             title: Text(player.name),
                           );
